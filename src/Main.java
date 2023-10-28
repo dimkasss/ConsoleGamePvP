@@ -10,5 +10,6 @@ public class Main {
         System.out.println("After wizard's attack!!");
         System.out.println(unit1);
         System.out.println(Game.PlayersCount);
+        System.out.println();
     }
 }
