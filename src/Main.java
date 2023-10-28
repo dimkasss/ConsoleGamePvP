@@ -11,7 +11,5 @@ public class Main {
         System.out.println(unit1);
         System.out.println(Game.PlayersCount);
 
-        Math math = new Math();
-        math.
     }
 }
