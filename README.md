@@ -1,6 +1,6 @@
 # Where am I?
 
-You're on a PvP game page. It is a console project that has originally been created to master Java classes and building an architecture of the application with classes in general.
+You're on a PvP game page. It is a console project that has originally been created to master Java classes and to train in building an architecture of the application with classes in general.
 
 To start playing, simply clone the repo and start the Main class.
 
