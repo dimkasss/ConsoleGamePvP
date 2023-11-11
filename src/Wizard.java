@@ -1,27 +1,41 @@
 public class Wizard extends Unit {
-    protected int mana = 100;
+    private static String unitType = "Wizard";
+    private static int health = 70;
+    private static int damage = 30;
 
-    public Wizard(String name, int damage) {
-        super(name);
-        super.setPower(damage);
-        super.setDefence(80);
+    private static int critDamage = 45;
+    private static float critChance = 0.5f;
+    private static float parryChange = 0f;
+    private int mana = 100;
+    private static int manaRequiredForCast = 100;
+    public Wizard() {}
+    public Wizard(Player player) {
+        super(health, damage, critDamage, critChance, parryChange, unitType, player);
     }
 
     @Override
-    public void attack(Unit unit) {
-        mana -= 10;
-        if (mana != 0) {
-            super.attack(unit);
+    public void attack(Unit opponent) {
+        if (this.mana >= 30) {
+            super.attack(opponent);
+            this.mana -= 30;
+        }
+        else {
+            System.out.println("[GAME] Wizard could not cast the attack spell! Not enough mana (" + this.mana + "/" +
+                    manaRequiredForCast + ")");
         }
     }
 
+    public String toString(String info) {
+        // Yes. I don't care about DRY principal. I just dont wanna think anymore. Leaving it as it is
+        return String.format(Utils.unitsWithManaSpecs, unitType, health, damage, critDamage, critChance, mana,
+                manaRequiredForCast);
+    }
+
+
     @Override
     public String toString() {
-        return "Wizard{" +
-                "mana=" + mana +
-                ", name='" + name + '\'' +
-                ", health=" + health +
-                ", defence=" + defence +
-                '}';
+        if (isAlive) return "[UNIT INFO] " + this.owner.getName() + "'s " + unitType + ":  " +
+                "Health: " + super.health + "; Damage: " + damage + "; Mana: " + this.mana;
+        return this.owner.getName() + "'s " + unitType + " is dead!";
     }
 }

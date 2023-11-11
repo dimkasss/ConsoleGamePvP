@@ -1,72 +1,61 @@
 public class Unit {
-    protected String name = "unnamed";
-    protected int health = 100;
-    protected int defence = 100;
-    protected int power = 10;
-    protected float CriticalChance = 0.1f;
-    protected float ParryChance = 0.1f;
+    public Player owner;
+    protected int health;
+    private int damage;
+    private float critChance;
+    private int critDamage;
+    private float parryChance;
 
-    public Unit(String name) {
-        Game.PlayersCount++;
-        this.name = name;
-    }
+    public boolean isAlive = true;
 
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
+    public String unitType;
+    public Unit() {}; // programming war crimes pt. 1
+    public Unit(int health, int damage, int critDamage, float critChance, float parryChance, String unitType, Player owner) {
+        Game.playersCount++;
         this.health = health;
+        this.damage = damage;
+        this.critDamage = critDamage;
+        this.critChance = critChance;
+        this.parryChance = parryChance;
+        this.unitType = unitType;
+        this.owner = owner;
     }
 
-    public int getDefence() {
-        return defence;
+    public boolean isCriticalAttack() {
+        return Math.random() <= this.critChance;
     }
 
-    public void setDefence(int defence) {
-        this.defence = defence;
+    public boolean isParried(double parryChance) {
+        return Math.random() <= parryChance;
     }
 
-    public int getPower() {
-        return power;
+    public void attack(Unit opponent) {
+        // if the attack is critical, you cannot parry it.
+        if (isCriticalAttack()) {
+            opponent.getDamage(this.critDamage);
+            Scenario.printDamageIsCritical(this.critDamage);
+        }
+        else if (!isParried(opponent.parryChance)) opponent.getDamage(this.damage);
+        else {
+            Scenario.printAttackIsParried();
+        }
+
+        if (opponent.health <= 0) opponent.Die();
     }
 
-    public void setPower(int power) {
-        this.power = power;
-    }
-
-    public float getCriticalChance() {
-        return CriticalChance;
-    }
-
-    public void setCriticalChance(float criticalChance) {
-        CriticalChance = criticalChance;
-    }
-
-    public float getParryChance() {
-        return ParryChance;
-    }
-
-    public void setParryChance(float parryChance) {
-        ParryChance = parryChance;
-    }
-
-    public void attack(Unit unit) {
-        unit.getDamage(power);
-    }
-
-    public void getDamage(int damage) {
-        this.health -= damage;
-        // critical hit realization as well
+    public void getDamage(int damage) { this.health -= damage; }
+    public void Die() {
+        System.out.printf("[GAME] %s's %s is dead!\n", this.owner.getName(), this.unitType); // %s's %s sounds cool
+        this.isAlive = false;
+        int unitsAlive = this.owner.getUnitsAliveCount() - 1;
+        this.owner.setUnitsAliveCount(unitsAlive);
+        if (this.owner.getUnitsAliveCount() == 0) Game.setGameOver();
     }
 
     @Override
     public String toString() {
-        return "Unit{" +
-                "health=" + health +
-                ", defence=" + defence +
-                ", power=" + power +
-                '}';
+        if (isAlive) return "[UNIT INFO] " + this.owner.getName() + "'s " + this.unitType + ":  " +
+                "Health: " + health + "; " + "Damage: " + damage;
+        return this.owner.getName() + "'s " + this.unitType + " is dead!";
     }
-
 }
